@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Danilo Inglés 4 • Random 25 • 80 Minutes</title>
+<style>
+:root { --green:#40B070; --orange:#F09010; --bg1:#0b1220; --bg2:#050814;
+  --card:rgba(255,255,255,.07); --border:rgba(255,255,255,.12);
+  --text:#e5e7eb; --muted:#cbd5e1; }
+html,body{height:100%;margin:0;overflow:hidden;background:
+  radial-gradient(1200px 600px at 20% 10%, rgba(64,176,112,.22), transparent 60%),
+  radial-gradient(1000px 700px at 90% 30%, rgba(240,144,16,.18), transparent 55%),
+  linear-gradient(180deg,var(--bg1),var(--bg2));
+  color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+/* No copy/select */
+html, body, .stage, .ui, .card, .opt, .qTitle, .small, .pill, .badge, .p, label, div, span, table, th, td{
+  -webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;user-select:none!important;
+  -webkit-touch-callout:none!important;
+}
+input, textarea, select { -webkit-user-select:text!important; user-select:text!important; }
+
+.wrap{height:100%;display:flex;align-items:center;justify-content:center;padding:14px;box-sizing:border-box;}
+.app{width:min(1200px,100%);}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;}
+.badge{background:linear-gradient(90deg, rgba(64,176,112,.35), rgba(240,144,16,.30));border:1px solid var(--border);
+  padding:6px 10px;border-radius:999px;font-weight:900;}
+.pills{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.pill{display:inline-flex;gap:8px;align-items:center;padding:6px 10px;border-radius:999px;
+  background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.10);font-size:12px;color:var(--muted);}
+.stage{position:relative;height:min(900px,86vh);background:linear-gradient(180deg, rgba(17,24,39,.82), rgba(17,24,39,.55));
+  border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.45);}
+canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+.ui{position:absolute;inset:0;padding:16px;box-sizing:border-box;display:none;overflow:auto;z-index:1;}
+.ui.active{display:block;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;margin-top:42px;}
+.h1{font-size:22px;font-weight:900;margin:0 0 6px 0;}
+.p{margin:0 0 10px 0;color:var(--muted);line-height:1.35;}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 6px;}
+input[type="password"]{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.25);color:var(--text);outline:none;}
+button{cursor:pointer;border:0;border-radius:14px;padding:12px 14px;font-weight:900;}
+.btnPrimary{background:linear-gradient(90deg,var(--green),var(--orange));color:#0b1220;}
+.btnGhost{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--text);}
+button:disabled{opacity:.45;cursor:not-allowed;filter:saturate(.7);}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.05);margin:8px 0;}
+.opt.locked{opacity:.80;pointer-events:none;}
+.opt input{margin-top:3px;}
+.opt.correct{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.45);}
+.opt.wrong{background:rgba(239,68,68,.16);border-color:rgba(239,68,68,.45);}
+.qTitle{font-weight:900;font-size:16px;margin:0 0 8px;white-space:pre-wrap;}
+.small{font-size:12px;color:var(--muted);white-space:pre-wrap;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media (max-width:780px){ .grid2{grid-template-columns:1fr;} }
+.lockscreen{position:absolute;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;padding:18px;box-sizing:border-box;z-index:2;}
+.lockscreen.active{display:flex;}
+.lockcard{max-width:780px;width:100%;background:rgba(17,24,39,.95);border:1px solid rgba(239,68,68,.35);border-radius:18px;padding:16px;}
+.warn{color:#fecaca;}
+.inlineTimer{margin-top:8px;display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;
+  background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.12);font-size:12px;color:var(--muted);}
+.feedbackRow{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.badgeOk{padding:6px 10px;border-radius:999px;background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.45);color:var(--text);font-weight:900;}
+.badgeBad{padding:6px 10px;border-radius:999px;background:rgba(239,68,68,.16);border:1px solid rgba(239,68,68,.45);color:var(--text);font-weight:900;}
+.badgeNeutral{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--muted);font-weight:800;}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="app">
+  <div class="topbar">
+    <div class="badge" id="titleBadge">Danilo Inglés 4 • Random 25 • 80 Minutes</div>
+    <div class="pills">
+      <div class="pill" id="timerPill">Total time: --:--</div>
+      <div class="pill" id="metaPill">Not started</div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <canvas id="cv"></canvas>
+
+    <div class="ui active" id="uiCode">
+      <div class="card">
+        <p class="h1">Access Code</p>
+        <p class="p">Type the code and press <b>Enter</b>.</p>
+
+        <form id="codeForm" autocomplete="off">
+          <label>Code</label>
+          <input id="codeInput" type="password" inputmode="numeric" autocomplete="off" placeholder="Enter access code" />
+          <div class="toolbar"><button class="btnPrimary" type="submit">Enter</button></div>
+        </form>
+
+        <div class="small" id="bankInfo">Bank: -- • Attempt: -- • Global time: 80:00</div>
+      </div>
+    </div>
+
+    <div class="ui" id="uiStart">
+      <div class="card">
+        <p class="h1">Instructions</p>
+        <p class="p">
+          • You have <b>80 minutes total</b> for the whole attempt.<br/>
+          • This attempt draws <b>25 random questions</b> from the bank.<br/>
+          • Leaving the tab/window locks the quiz immediately. The current question counts as wrong. Re-enter the code to continue and the quiz advances automatically.
+        </p>
+        <div class="toolbar"><button class="btnPrimary" id="btnStart" type="button">Start</button></div>
+      </div>
+    </div>
+
+    <div class="ui" id="uiQuiz">
+      <div class="card">
+        <div class="toolbar" style="justify-content:space-between;">
+          <div class="pill" id="qPill">Q</div>
+          <div class="pill" id="securityPill">Security: OK</div>
+        </div>
+        <div id="qbox" style="margin-top:10px;"></div>
+        <div class="toolbar">
+          <button class="btnPrimary" id="btnConfirm" type="button">Check answer</button>
+          <button class="btnGhost" id="btnNext" type="button">Next question</button>
+        </div>
+        <div class="small">After checking, your answer is locked. Wrong answers do not reveal the correct option.</div>
+      </div>
+    </div>
+
+    <div class="ui" id="uiResults">
+      <div class="card">
+        <p class="h1">Results</p>
+        <div class="grid2">
+          <div class="card" style="margin-top:0;background:rgba(240,144,16,.08);border-color:rgba(240,144,16,.24)">
+            <p class="h1" style="font-size:18px;margin:0 0 6px;">Final Grade</p>
+            <p class="p" id="finalGrade" style="font-size:22px;font-weight:900;margin:0;"></p>
+            <p class="small" id="finalMeta"></p>
+          </div>
+          <div class="card" style="margin-top:0;">
+            <p class="h1" style="font-size:16px;margin-bottom:8px;">Security Log</p>
+            <div class="small" id="securityLog">No incidents.</div>
+          </div>
+        </div>
+        <div class="toolbar"><button class="btnPrimary" id="btnRestart" type="button">Restart</button></div>
+        <div class="small">Restart requires the access code again.</div>
+      </div>
+    </div>
+
+    <div class="lockscreen" id="lockscreen">
+      <div class="lockcard">
+        <p class="h1 warn">Security Check</p>
+        <p class="p warn" id="lockReason">Re-enter the access code to continue.</p>
+        <label>Access code</label>
+        <input id="resumeCodeInput" type="password" inputmode="numeric" autocomplete="off" placeholder="Enter access code" />
+        <div class="toolbar">
+          <button class="btnPrimary" id="btnResume" type="button">Continue</button>
+          <button class="btnGhost" id="btnCancelLock" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div></div>
+
+<script type="application/json" id="bankData">{"access_code": "1991", "sample_size": 25, "total_seconds": 4800, "bank": [{"id": 1, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: Is it necessary to wear an ID card at work?\nB: Yes, you _. It is a company rule.", "options": ["must", "may", "could", "should"], "answer": 0}, {"id": 2, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: Laura wants to be a pilot one day. What is necessary for her?\nB: She _ study a lot and practice English.", "options": ["might", "shouldn’t", "has to", "doesn’t have to"], "answer": 2}, {"id": 3, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: Can workers eat in the computer room?\nB: No, they _.", "options": ["don’t have to", "mustn’t", "should", "may"], "answer": 1}, {"id": 4, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: Do I need to go to the office tomorrow?\nB: No, you _. Tomorrow is a holiday.", "options": ["mustn’t", "have to", "should", "don’t have to"], "answer": 3}, {"id": 5, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: I feel stressed because I have many responsibilities.\nB: You _ make a simple weekly plan.", "options": ["should", "mustn’t", "may", "have to"], "answer": 0}, {"id": 6, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: I want a good professional future. What is one bad idea?\nB: You _ ignore your tasks.", "options": ["could", "should", "shouldn’t", "have to"], "answer": 2}, {"id": 7, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: I’m not sure about Julia’s future.\nB: She _ start her own business one day.", "options": ["has to", "may", "mustn’t", "should"], "answer": 1}, {"id": 8, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: Where is the supervisor?\nB: I’m not sure. He _ be in a meeting.", "options": ["must", "should", "has to", "might"], "answer": 3}, {"id": 9, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: Do you think Andrés has a chance to become a team leader?\nB: Yes, he _ become one in the future.", "options": ["could", "mustn’t", "don’t have to", "should"], "answer": 0}, {"id": 10, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: Does Paula need to go to the office on Fridays?\nB: No, she works from home. She _ go to the office.", "options": ["mustn’t", "has to", "doesn’t have to", "should"], "answer": 2}, {"id": 11, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: Is it necessary to sign in when we arrive?\nB: Yes, all employees _.", "options": ["may", "don’t have to", "mustn’t", "have to"], "answer": 3}, {"id": 12, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: I really want to finish my degree.\nB: Then you _ stay focused this year.", "options": ["shouldn’t", "must", "might", "doesn’t have to"], "answer": 1}, {"id": 13, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: I want people to trust me at work.\nB: You _ keep your promises.", "options": ["should", "might", "mustn’t", "don’t have to"], "answer": 0}, {"id": 14, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: Can employees share private client information?\nB: No, they _.", "options": ["should", "don’t have to", "may", "mustn’t"], "answer": 3}, {"id": 15, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: Is there a chance that Marta studies abroad?\nB: Yes, she _ study in Canada next year.", "options": ["has to", "should", "may", "mustn’t"], "answer": 2}, {"id": 16, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: Do we need to attend the extra workshop?\nB: No, it is optional. We _ attend it.", "options": ["mustn’t", "don’t have to", "should", "may"], "answer": 1}, {"id": 17, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: My brother starts work at 6:30 a.m.\nB: Then he _ get up very early.", "options": ["has to", "could", "doesn’t have to", "may"], "answer": 0}, {"id": 18, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: Do you think the new intern has a chance to stay in the company?\nB: Yes, she _ get a full-time job later.", "options": ["must", "shouldn’t", "doesn’t have to", "could"], "answer": 3}, {"id": 19, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: I want better results this semester.\nB: Then you _ leave everything for the last minute.", "options": ["must", "shouldn’t", "may", "have to"], "answer": 1}, {"id": 20, "type": "mcq", "instruction": "Choose the best option to complete the conversation.", "stem": "A: The director is not in her office.\nB: She _ be with the client now.", "options": ["has to", "should", "might", "mustn’t"], "answer": 2}, {"id": 21, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“I want to save money for my life project.”", "options": ["You mustn’t save money.", "You may ignore your budget.", "You don’t have to think about money.", "You should control your spending."], "answer": 3}, {"id": 22, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“At this factory, workers wear helmets.”", "options": ["So workers have to wear helmets.", "So workers may wear helmets.", "So workers don’t have to wear helmets.", "So workers shouldn’t wear helmets."], "answer": 0}, {"id": 23, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“This room is only for managers.”", "options": ["Employees should enter the room.", "Employees don’t have to enter the room.", "Employees mustn’t enter the room.", "Employees could enter the room."], "answer": 2}, {"id": 24, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“I feel confused about my future career.”", "options": ["You mustn’t ask for help.", "You should talk to a teacher or mentor.", "You may stop studying now.", "You don’t have to think about it."], "answer": 1}, {"id": 25, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“The extra class is optional.”", "options": ["Students must go.", "Students should go because it is a rule.", "Students mustn’t go.", "Students don’t have to go."], "answer": 3}, {"id": 26, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“My manager has not answered my message.”", "options": ["She might be busy.", "She mustn’t work today.", "She should answer yesterday.", "She doesn’t have to read messages."], "answer": 0}, {"id": 27, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“I want a promotion next year.”", "options": ["You may arrive late every day.", "You mustn’t improve your work habits.", "You should be more responsible at work.", "You don’t have to do your tasks well."], "answer": 2}, {"id": 28, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“People are not allowed to copy during exams.”", "options": ["Students could copy during exams.", "Students mustn’t copy during exams.", "Students should copy during exams.", "Students don’t have to study for exams."], "answer": 1}, {"id": 29, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“There is a chance that Ana gets the scholarship.”", "options": ["Ana must get the scholarship.", "Ana shouldn’t get the scholarship.", "Ana doesn’t have to get the scholarship.", "Ana could get the scholarship."], "answer": 3}, {"id": 30, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“I feel tired because I do many things every day.”", "options": ["You should organize your time better.", "You may work more hours.", "You mustn’t rest.", "You don’t have to sleep well."], "answer": 0}, {"id": 31, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“This information is private.”", "options": ["So everyone may share it.", "So workers should post it online.", "So workers mustn’t share it.", "So workers don’t have to protect it."], "answer": 2}, {"id": 32, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“I am not sure what to study after school.”", "options": ["You must choose today.", "You should think about your interests first.", "You may ignore the decision forever.", "You don’t have to know anything about yourself."], "answer": 1}, {"id": 33, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“The office is empty this morning.”", "options": ["The workers must be at home.", "The workers shouldn’t be there.", "The workers don’t have to work.", "The workers might be working online."], "answer": 3}, {"id": 34, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“I want better job opportunities in the future.”", "options": ["You should improve your English and skills.", "You mustn’t study.", "You may ignore your learning plan.", "You don’t have to prepare for interviews."], "answer": 0}, {"id": 35, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“The museum is closed today, so the visit is not necessary.”", "options": ["We must go today.", "We don’t have to go today.", "We should go inside now.", "We may break the rule."], "answer": 1}, {"id": 36, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“My classmate speaks English very well now.”", "options": ["He mustn’t practice.", "He doesn’t have to learn more.", "He could work in an international company one day.", "He should stop studying English."], "answer": 2}, {"id": 37, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“My work starts at 8:00 a.m. every day.”", "options": ["So I may arrive at any time.", "So I shouldn’t be punctual.", "So I don’t have to get up early.", "So I have to be on time."], "answer": 3}, {"id": 38, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“I want to be more organized this year.”", "options": ["You should make a daily routine.", "You may leave everything for later.", "You mustn’t plan your week.", "You don’t have to use your time well."], "answer": 0}, {"id": 39, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“The company says workers cannot use phones during meetings.”", "options": ["Workers may use phones during meetings.", "Workers mustn’t use phones during meetings.", "Workers should call clients during meetings.", "Workers don’t have to listen during meetings."], "answer": 1}, {"id": 40, "type": "mcq", "instruction": "Read the sentence and choose the best response.", "stem": "“I’m not sure where the director is.”", "options": ["She doesn’t have to work today.", "She mustn’t be in the building.", "She might be in another office.", "She should be late every day."], "answer": 2}, {"id": 41, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is not necessary to go to the meeting.”", "options": ["You mustn’t go to the meeting.", "You don’t have to go to the meeting.", "You should go to the meeting.", "You may never go to meetings."], "answer": 1}, {"id": 42, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is a good idea to plan your future.”", "options": ["You may plan your future.", "You mustn’t plan your future.", "You don’t have to plan your future.", "You should plan your future."], "answer": 3}, {"id": 43, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “There is a chance that Paulo works abroad.”", "options": ["Paulo could work abroad.", "Paulo must work abroad.", "Paulo shouldn’t work abroad.", "Paulo has to work abroad."], "answer": 0}, {"id": 44, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is necessary for visitors to sign in.”", "options": ["Visitors may sign in.", "Visitors shouldn’t sign in.", "Visitors have to sign in.", "Visitors don’t have to sign in."], "answer": 2}, {"id": 45, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is a bad idea to ignore your responsibilities.”", "options": ["You should ignore your responsibilities.", "You shouldn’t ignore your responsibilities.", "You may ignore your responsibilities.", "You don’t have to care about your work."], "answer": 1}, {"id": 46, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is prohibited to park here.”", "options": ["You should not park here.", "You don’t have to park here.", "You may not park here.", "You mustn’t park here."], "answer": 3}, {"id": 47, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is possible that the team is at the client’s office.”", "options": ["The team might be at the client’s office.", "The team must be at the client’s office.", "The team shouldn’t be at the client’s office.", "The team doesn’t have to be at the client’s office."], "answer": 0}, {"id": 48, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is necessary for students to send the form today.”", "options": ["Students may send the form today.", "Students shouldn’t send the form today.", "Students have to send the form today.", "Students don’t have to send the form today."], "answer": 2}, {"id": 49, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is a good idea to speak politely to clients.”", "options": ["You may speak politely to clients.", "You should speak politely to clients.", "You mustn’t speak politely to clients.", "You don’t have to respect clients."], "answer": 1}, {"id": 50, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is optional to attend the extra workshop.”", "options": ["You may not attend the extra workshop.", "You have to attend the extra workshop.", "You mustn’t attend the extra workshop.", "You don’t have to attend the extra workshop."], "answer": 3}, {"id": 51, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is possible that Laura changes her job next year.”", "options": ["Laura may change her job next year.", "Laura must change her job next year.", "Laura shouldn’t change her job next year.", "Laura has to change her job next year."], "answer": 0}, {"id": 52, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is not a good idea to arrive late.”", "options": ["You may arrive late.", "You must arrive late.", "You shouldn’t arrive late.", "You don’t have to arrive late."], "answer": 2}, {"id": 53, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is necessary for Marta to work on Saturdays.”", "options": ["Marta may work on Saturdays.", "Marta has to work on Saturdays.", "Marta shouldn’t work on Saturdays.", "Marta doesn’t have to work on Saturdays."], "answer": 1}, {"id": 54, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is possible that the new intern becomes a manager one day.”", "options": ["The new intern must become a manager one day.", "The new intern shouldn’t become a manager one day.", "The new intern has to become a manager one day.", "The new intern could become a manager one day."], "answer": 3}, {"id": 55, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is important to protect private information.”", "options": ["You must protect private information.", "You may protect private information.", "You don’t have to protect private information.", "You shouldn’t protect private information."], "answer": 0}, {"id": 56, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is not necessary for Leo to wear a tie today.”", "options": ["Leo mustn’t wear a tie today.", "Leo should wear a tie today.", "Leo doesn’t have to wear a tie today.", "Leo may wear a tie today because it is prohibited."], "answer": 2}, {"id": 57, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is a good idea to ask questions when you do not understand.”", "options": ["You may stay silent.", "You should ask questions.", "You mustn’t ask questions.", "You don’t have to learn anything."], "answer": 1}, {"id": 58, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is possible that the results arrive today.”", "options": ["The results must arrive today.", "The results shouldn’t arrive today.", "The results don’t have to arrive today.", "The results might arrive today."], "answer": 3}, {"id": 59, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is prohibited to touch the paintings.”", "options": ["Visitors mustn’t touch the paintings.", "Visitors should touch the paintings.", "Visitors may touch the paintings.", "Visitors don’t have to follow the rule."], "answer": 0}, {"id": 60, "type": "mcq", "instruction": "Choose the option that best matches the idea.", "stem": "Idea: “It is possible that Juan studies medicine.”", "options": ["Juan must study medicine.", "Juan shouldn’t study medicine.", "Juan may study medicine.", "Juan doesn’t have to study medicine."], "answer": 2}, {"id": 61, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "A student wants to be more responsible at school. What is the best advice?", "options": ["He may ignore deadlines.", "He mustn’t do homework.", "He doesn’t have to listen in class.", "He should complete his tasks on time."], "answer": 3}, {"id": 62, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "A company rule says workers cannot enter this area without permission.", "options": ["Workers may enter the area.", "Workers mustn’t enter the area without permission.", "Workers should enter the area quickly.", "Workers don’t have to respect the rule."], "answer": 1}, {"id": 63, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "A nurse starts work very early every morning.", "options": ["She has to wake up early.", "She may wake up early.", "She mustn’t wake up early.", "She doesn’t have to wake up early."], "answer": 0}, {"id": 64, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "A student is not sure about her future after school.", "options": ["She must choose today.", "She shouldn’t think about it.", "She might study another career later.", "She doesn’t have to have goals."], "answer": 2}, {"id": 65, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "Tomorrow is a holiday, and the office is closed.", "options": ["Employees should go to work tomorrow.", "Employees must go to work tomorrow.", "Employees mustn’t stay home tomorrow.", "Employees don’t have to go to work tomorrow."], "answer": 3}, {"id": 66, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "A student feels lost about his life project.", "options": ["He may ignore the problem.", "He should write simple personal goals.", "He mustn’t ask for advice.", "He doesn’t have to think about the future."], "answer": 1}, {"id": 67, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "The manager is not in the office, and nobody knows where she is.", "options": ["She might be with a client.", "She mustn’t be at work.", "She should be late every day.", "She doesn’t have to answer messages."], "answer": 0}, {"id": 68, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "A student does not understand a class activity.", "options": ["He may leave the classroom.", "He mustn’t say anything.", "He should ask the teacher for help.", "He doesn’t have to learn the activity."], "answer": 2}, {"id": 69, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "A company is growing fast this year.", "options": ["Workers must get promotions now.", "Workers shouldn’t expect changes.", "Workers don’t have to think about the future.", "Some workers could get new opportunities soon."], "answer": 3}, {"id": 70, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "A school rule says students need to wear their uniform every Monday.", "options": ["Students may wear their uniform every Monday.", "Students have to wear their uniform every Monday.", "Students shouldn’t wear their uniform every Monday.", "Students don’t have to wear their uniform every Monday."], "answer": 1}, {"id": 71, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "A young woman wants people to trust her at work.", "options": ["She should be responsible and honest.", "She may arrive late every day.", "She mustn’t finish tasks on time.", "She doesn’t have to respect others."], "answer": 0}, {"id": 72, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "The team is not in the office this morning.", "options": ["The team must be on vacation.", "The team shouldn’t work today.", "The team might be working from home.", "The team doesn’t have to answer emails."], "answer": 2}, {"id": 73, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "A student wants to improve his English for future jobs.", "options": ["He may stop practicing.", "He mustn’t study vocabulary.", "He doesn’t have to listen in class.", "He should practice every day."], "answer": 3}, {"id": 74, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "Visitors are in a museum. There is a sign: “Do not touch the paintings.”", "options": ["Visitors may touch the paintings.", "Visitors mustn’t touch the paintings.", "Visitors should touch the paintings carefully.", "Visitors don’t have to follow the sign."], "answer": 1}, {"id": 75, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "A worker has an optional training session this afternoon.", "options": ["He doesn’t have to attend the training.", "He must attend the training.", "He shouldn’t read the email about it.", "He may never do training."], "answer": 0}, {"id": 76, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "A girl has talent in science and medicine.", "options": ["She must become a doctor.", "She shouldn’t think about medicine.", "She could become a doctor one day.", "She doesn’t have to study science."], "answer": 2}, {"id": 77, "type": "mcq", "instruction": "Read the situation and choose the best option.", "stem": "A company rule says workers cannot use phones during meetings.", "options": ["Workers may use phones during meetings.", "Workers should call clients during meetings.", "Workers don’t have to listen in meetings.", "Workers mustn’t use phones during meetings."], "answer": 3}]}</script>
+
+<script>
+'use strict';
+const DATA = JSON.parse(document.getElementById('bankData').textContent);
+const $ = (id)=>document.getElementById(id);
+
+const uiCode=$("uiCode"), uiStart=$("uiStart"), uiQuiz=$("uiQuiz"), uiResults=$("uiResults");
+const codeInput=$("codeInput"), codeForm=$("codeForm"), btnStart=$("btnStart");
+const timerPill=$("timerPill"), metaPill=$("metaPill"), qPill=$("qPill"), securityPill=$("securityPill");
+const qbox=$("qbox"), btnConfirm=$("btnConfirm"), btnNext=$("btnNext");
+const finalGrade=$("finalGrade"), finalMeta=$("finalMeta"), securityLog=$("securityLog");
+const lockscreen=$("lockscreen"), lockReason=$("lockReason"), resumeCodeInput=$("resumeCodeInput"), btnResume=$("btnResume");
+const btnRestart=$("btnRestart"), btnCancelLock=$("btnCancelLock");
+const bankInfo=$("bankInfo"), titleBadge=$("titleBadge");
+
+// Canvas decoration
+const cv=$("cv"), ctx=cv.getContext("2d");
+function fit(){
+  const r=cv.getBoundingClientRect();
+  const dpr=Math.max(1, window.devicePixelRatio||1);
+  cv.width=Math.round(r.width*dpr); cv.height=Math.round(r.height*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  draw();
+}
+window.addEventListener("resize", fit);
+function draw(){
+  const w=cv.clientWidth, h=cv.clientHeight;
+  ctx.clearRect(0,0,w,h);
+  ctx.globalAlpha=.14; ctx.strokeStyle="rgba(255,255,255,.14)";
+  const step=Math.max(22, Math.floor(Math.min(w,h)/18));
+  for(let x=0;x<w;x+=step){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+  for(let y=0;y<h;y+=step){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+  ctx.globalAlpha=1;
+  const grad=ctx.createLinearGradient(0,0,w,0);
+  grad.addColorStop(0,"rgba(64,176,112,.22)");
+  grad.addColorStop(1,"rgba(240,144,16,.18)");
+  ctx.fillStyle=grad; ctx.fillRect(0,0,w,Math.max(54,h*0.08));
+  ctx.fillStyle="rgba(255,255,255,.75)";
+  ctx.font="800 14px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+  ctx.fillText("Secure Canvas Assessment", 16, 30);
+  ctx.fillStyle="rgba(255,255,255,.55)";
+  ctx.font="700 12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+  ctx.fillText("Canvas is click-through (Start works)", 16, 48);
+}
+fit();
+
+// Helpers
+function show(el){ [uiCode,uiStart,uiQuiz,uiResults].forEach(x=>x.classList.remove("active")); el.classList.add("active"); }
+function pad2(n){ return n<10?("0"+n):(""+n); }
+function fmt(sec){ const m=Math.floor(sec/60), s=sec%60; return pad2(m)+":"+pad2(s); }
+function setTimer(sec){
+  const txt = (sec==null) ? "Total time: --:--" : ("Total time: "+fmt(sec));
+  timerPill.textContent = txt;
+  const inline=document.getElementById("totalTimerInline");
+  if(inline) inline.textContent = txt;
+}
+function setMeta(t){ metaPill.textContent=t; }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function esc(s){ return (s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+
+// State
+const S={phase:"code", sel:[], idx:0, ans:{}, lock:{}, shuf:{},
+         t:{id:null,left:0}, sec:{started:false,locked:false,inc:[],ignoreUntil:0},
+         score:{correct:0,wrong:0}, restartPending:false};
+
+function clearT(){ if(S.t.id){ clearInterval(S.t.id); S.t.id=null; } }
+function startGlobalT(){
+  clearT();
+  setTimer(S.t.left);
+  S.t.id=setInterval(()=>{
+    if(S.phase!=="quiz") return;
+    S.t.left = Math.max(0, S.t.left-1);
+    setTimer(S.t.left);
+    if(S.t.left===0) finish(true);
+  },1000);
+}
+
+function pick(){
+  const total=DATA.bank.length, needed=Math.min(DATA.sample_size||25, total);
+  const idxs=Array.from({length:total},(_,i)=>i);
+  S.sel=shuffle(idxs).slice(0, needed);
+  S.idx=0; S.ans={}; S.lock={}; S.shuf={}; S.score={correct:0,wrong:0};
+
+  for(const gi of S.sel){
+    const qq=DATA.bank[gi];
+    const perm=shuffle(qq.options.map((_,i)=>i));
+    const newOpts=perm.map(i=>qq.options[i]);
+    const newCorrect=perm.indexOf(Number(qq.answer));
+    S.shuf[String(gi)]={options:newOpts, answer:newCorrect};
+  }
+}
+
+function qNow(){
+  const gi=S.sel[S.idx];
+  const qq=DATA.bank[gi];
+  const sh=S.shuf[String(gi)];
+  return Object.assign({}, qq, {options: sh.options, answer: sh.answer});
+}
+
+function render(){
+  const qq=qNow();
+  const key="q"+S.idx;
+  const locked=!!S.lock[key];
+
+  btnConfirm.disabled = locked;
+  qPill.textContent = "Q "+(S.idx+1)+" / "+S.sel.length+" • "+(qq.skill||"");
+  qbox.innerHTML="";
+  qbox.insertAdjacentHTML("beforeend", '<p class="small">'+esc(qq.instruction)+'</p>');
+  qbox.insertAdjacentHTML("beforeend", '<p class="qTitle">'+esc(qq.stem)+'</p>');
+  qbox.insertAdjacentHTML("beforeend", '<div class="inlineTimer" id="totalTimerInline">Total time: --:--</div>');
+  setTimer(S.t.left);
+
+  const saved=S.ans[key];
+  const chosen=(saved!==undefined && saved!=="__FORCED_WRONG__") ? Number(saved) : null;
+  const group="g_"+key;
+
+  qq.options.forEach((opt,i)=>{
+    const row=document.createElement("label");
+    let extra="";
+    if(locked){
+      if(chosen===i && i===Number(qq.answer)) extra+=" correct";
+      if(chosen===i && i!==Number(qq.answer)) extra+=" wrong";
+    }
+    row.className="opt"+(locked?" locked":"")+extra;
+
+    const r=document.createElement("input");
+    r.type="radio"; r.name=group; r.value=String(i); r.disabled=locked;
+    if(chosen!==null && chosen===i) r.checked=true;
+
+    const span=document.createElement("div");
+    span.innerHTML="<b>"+String.fromCharCode(65+i)+"</b>. "+esc(opt);
+
+    row.appendChild(r); row.appendChild(span);
+    row.addEventListener("click", ()=>{
+      if(S.lock[key]) return;
+      r.checked=true; S.ans[key]=String(i);
+    });
+    qbox.appendChild(row);
+  });
+
+  qbox.insertAdjacentHTML("beforeend",
+    '<div class="feedbackRow">'+
+      '<span class="badgeNeutral" id="badgeResult">Result: —</span>'+
+      '<span class="badgeNeutral" id="badgeCount">Correct: '+S.score.correct+' • Incorrect: '+S.score.wrong+'</span>'+
+    '</div>');
+}
+
+function updateBadges(ok){
+  const badge=document.getElementById("badgeResult");
+  const count=document.getElementById("badgeCount");
+  if(badge){
+    badge.className = ok ? "badgeOk" : "badgeBad";
+    badge.textContent = ok ? "Correct" : "Incorrect";
+  }
+  if(count){ count.textContent = "Correct: "+S.score.correct+" • Incorrect: "+S.score.wrong; }
+}
+
+function confirm(){
+  const qq=qNow();
+  const key="q"+S.idx;
+  if(S.lock[key]) return;
+  if(S.ans[key]===undefined){ alert("Choose an answer first."); return; }
+
+  const chosen=Number(S.ans[key]);
+  const ok = chosen===Number(qq.answer);
+
+  S.lock[key]=true;
+  if(ok) S.score.correct++; else S.score.wrong++;
+
+  render(); updateBadges(ok); setMeta("Saved Q"+(S.idx+1));
+  btnConfirm.disabled=true;
+}
+
+function forceWrong(){
+  const key="q"+S.idx;
+  if(S.lock[key]) return;
+  S.lock[key]=true;
+  S.ans[key]="__FORCED_WRONG__";
+  S.score.wrong++;
+}
+
+function nextQ(){
+  if(S.idx < S.sel.length-1){
+    S.idx++;
+    render();
+    setMeta("In progress");
+  } else finish(false);
+}
+
+function grade(){
+  let correct=0, total=S.sel.length;
+  for(let i=0;i<total;i++){
+    const gi=S.sel[i];
+    const sh=S.shuf[String(gi)];
+    const a=S.ans["q"+i];
+    if(a===undefined || a==="__FORCED_WRONG__") continue;
+    if(Number(a)===Number(sh.answer)) correct++;
+  }
+  const pct = total ? (correct/total) : 0;
+  const g = 1 + 4*pct;
+  return {correct,total,pct,grade:Math.round(g*10)/10};
+}
+
+function finish(timeUp){
+  clearT();
+  const r=grade();
+  finalGrade.textContent=r.grade.toFixed(1)+" / 5.0";
+  finalMeta.textContent="Correct: "+r.correct+" / "+r.total+" • Accuracy: "+Math.round(r.pct*100)+"%"+(timeUp?" • Time up":"");
+  securityLog.textContent=S.sec.inc.length ? S.sec.inc.join("\n") : "No incidents.";
+  S.phase="results";
+  show(uiResults);
+  setMeta("Done");
+}
+
+// Security
+function shouldTrip(){ return S.sec.started && S.phase==="quiz" && !S.sec.locked && Date.now()>=S.sec.ignoreUntil; }
+function logInc(msg){ const t=new Date().toLocaleString(); S.sec.inc.push("["+t+"] "+msg); securityPill.textContent="Security: INCIDENT"; }
+function lock(reason){
+  if(!shouldTrip()) return;
+  S.sec.locked=true;
+  logInc("LOCK: "+reason);
+  forceWrong();
+  lockReason.textContent = reason + " (Question counted as wrong.)";
+  resumeCodeInput.value="";
+  lockscreen.classList.add("active");
+}
+
+function resetToStart(){
+  clearT();
+  S.phase='start';
+  S.sec.started=false; S.sec.locked=false; S.sec.inc=[]; S.sec.ignoreUntil=0;
+  S.sel=[]; S.idx=0; S.ans={}; S.lock={}; S.shuf={}; S.score={correct:0,wrong:0};
+  S.t.left = DATA.total_seconds || 4800;
+  setTimer(S.t.left);
+  codeInput.value=''; resumeCodeInput.value='';
+  securityPill.textContent='Security: OK';
+  setMeta('Ready');
+  lockscreen.classList.remove('active');
+  show(uiStart);
+}
+
+function unlockResume(){
+  const code=resumeCodeInput.value.trim();
+  if(code!==DATA.access_code){ alert("Incorrect code."); resumeCodeInput.value=""; return; }
+  resumeCodeInput.value="";
+  lockscreen.classList.remove("active");
+  if(S.restartPending){
+    S.restartPending=false;
+    resetToStart();
+    return;
+  }
+  S.sec.locked=false;
+  S.sec.ignoreUntil=Date.now()+1200;
+  nextQ();
+}
+
+document.addEventListener("visibilitychange", ()=>{ if(!shouldTrip()) return; if(document.hidden) lock("Tab/window was sent to background."); });
+window.addEventListener("blur", ()=>{ if(!shouldTrip()) return; lock("Window lost focus."); });
+window.addEventListener("pagehide", ()=>{ if(!shouldTrip()) return; lock("Page was hidden (pagehide)."); });
+window.addEventListener("focusout", ()=>{ if(!shouldTrip()) return; if(!document.hasFocus()) lock("Focus moved away from the page."); });
+setInterval(()=>{ if(!shouldTrip()) return; if(document.hidden || !document.hasFocus()) lock("Focus/visibility check failed."); }, 250);
+
+// shortcuts and no copy
+document.addEventListener("keydown", (e)=>{
+  if(S.phase!=="quiz") return;
+  const k=(e.key||"").toLowerCase();
+  const ctrl=e.ctrlKey || e.metaKey;
+  const blocked =
+    (ctrl && ["c","v","x","p","s","u","r","w","t","n","a"].includes(k)) ||
+    (e.key==="F12") ||
+    (ctrl && e.shiftKey && ["i","j","c"].includes(k)) ||
+    (e.key==="PrintScreen") ||
+    (ctrl && e.shiftKey && k==="s") ||
+    (e.metaKey && e.shiftKey && ["3","4","5"].includes(k));
+  if(blocked){ e.preventDefault(); lock("Blocked shortcut / capture attempt detected."); }
+});
+["contextmenu","copy","cut","paste","selectstart","dragstart"].forEach(ev=>{
+  document.addEventListener(ev, (e)=>{ if(S.phase==="quiz" || S.phase==="results") e.preventDefault(); });
+});
+
+// Flow
+function unlockStart(){
+  const code=codeInput.value.trim();
+  if(code!==DATA.access_code){ alert("Incorrect code."); codeInput.value=""; codeInput.focus(); return; }
+  codeInput.value="";
+  show(uiStart);
+  setMeta("Ready");
+}
+
+function startExam(){
+  S.sec.started=true;
+  pick();
+  S.phase="quiz";
+  show(uiQuiz);
+  setMeta("Random "+S.sel.length+" / "+DATA.bank.length);
+  render();
+  startGlobalT();
+}
+
+// ENTER works via submit; Start via click
+codeForm.addEventListener("submit", (e)=>{ e.preventDefault(); unlockStart(); });
+btnStart.addEventListener("click", (e)=>{ e.preventDefault(); startExam(); });
+btnConfirm.addEventListener("click", (e)=>{ e.preventDefault(); confirm(); });
+btnNext.addEventListener("click", (e)=>{ e.preventDefault(); nextQ(); });
+btnResume.addEventListener("click", (e)=>{ e.preventDefault(); unlockResume(); });
+resumeCodeInput.addEventListener("keydown", (e)=>{ if(e.key==="Enter" || e.keyCode===13){ e.preventDefault(); unlockResume(); }});
+
+btnRestart.addEventListener("click", (e)=>{
+  e.preventDefault();
+  S.restartPending=true;
+  lockReason.textContent="Enter the access code to restart the quiz.";
+  resumeCodeInput.value="";
+  lockscreen.classList.add("active");
+  setTimeout(()=>{ try{ resumeCodeInput.focus(); }catch(_){ } },120);
+});
+btnCancelLock.addEventListener("click", (e)=>{
+  e.preventDefault();
+  if(S.restartPending){ S.restartPending=false; lockscreen.classList.remove("active"); return; }
+  lockscreen.classList.remove("active");
+});
+
+// Init labels
+(function(){
+  const bankN = DATA.bank.length;
+  const attempt = Math.min(DATA.sample_size||25, bankN);
+  bankInfo.textContent = "Bank: "+bankN+" • Attempt: "+attempt+" • Global time: 80:00";
+  titleBadge.textContent = "Secure Quiz • Random "+attempt+" • 80 Minutes";
+  S.t.left = DATA.total_seconds || 4800;
+  setTimer(S.t.left);
+  setTimeout(()=>{ try{ codeInput.focus(); }catch(e){} },120);
+})();
+</script>
+</body>
+</html>
